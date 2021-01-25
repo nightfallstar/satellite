@@ -3,13 +3,20 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
+	"github.com/valyala/fasthttp"
 )
 
-func main() {
-	http.HandleFunc("/", func (res http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(res, "{}")
-	})
+func httpsHandler(ctx *fasthttp.RequestCtx) {
+	switch string(ctx.Path()) {
+	case "/auth":
+		// TO DO
+		break
 
-	log.Fatal(http.ListenAndServeTLS("0.0.0.0:8443", "certs/development/cert.pem", "certs/development/key.pem", nil))
+	default:
+		fmt.Fprintf(ctx, "{}")
+	}
+}
+
+func main() {
+	log.Fatal(fasthttp.ListenAndServeTLS("0.0.0.0:8443", "certs/development/cert.pem", "certs/development/key.pem", httpsHandler))
 }
